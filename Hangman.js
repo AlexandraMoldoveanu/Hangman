@@ -75,9 +75,6 @@ window.addEventListener("keydown", function(event){
 })
 
 
-console.log(joc1.currentWord);
-console.log(joc1.triedLetters);
-console.log(joc1.numberOfGuesses);
-console.log(joc1.currentWordState);
+
 
 
