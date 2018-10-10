@@ -5,6 +5,7 @@ function Game() {
     this.currentWordState = [];
     this.numberOfGuesses = 6;
     this.generateWord();
+    this.newWordState;
 }
 
 Game.prototype.generateWord = function () {
@@ -23,6 +24,7 @@ Game.prototype.isGameOver = function() {
 
 
 Game.prototype.makeAMove = function (guessLetter) {
+    
     if(this.isGameOver()) {
         return;
     }
@@ -43,10 +45,36 @@ Game.prototype.makeAMove = function (guessLetter) {
 }
 
 
-
+Game.prototype.generateCurrentWordState = function(){
+    var newWordState = "";
+    for(var i = 0; i< this.currentWord.length; i++){
+        if(this.currentWordState[i]){
+            newWordState = newWordState + this.currentWordState[i];
+        }
+        else{
+            newWordState = newWordState + " - ";
+        }
+       
+    }
+    return newWordState;
+}
 
 var joc1 = new Game();
-joc1.makeAMove("p");
+
+document.getElementById("currentWord").innerText = joc1.generateCurrentWordState();
+document.getElementById("numberOfGuesses").innerText = joc1.numberOfGuesses;
+document.getElementById("triedLetters").innerText = joc1.triedLetters.join();
+
+window.addEventListener("keydown", function(event){
+    if (event.keyCode >= 65 && event.keyCode <= 90){
+        joc1.makeAMove(event.key);
+        document.getElementById("currentWord").innerText = joc1.generateCurrentWordState();
+        document.getElementById("numberOfGuesses").innerText = joc1.numberOfGuesses;
+        document.getElementById("triedLetters").innerText = joc1.triedLetters.join();
+    }
+})
+
+
 console.log(joc1.currentWord);
 console.log(joc1.triedLetters);
 console.log(joc1.numberOfGuesses);
