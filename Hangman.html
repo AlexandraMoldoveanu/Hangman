@@ -4,7 +4,49 @@
 <title>Spanzuratoarea lui Ale</title>
 <style type="text/css">
 
-   h1 {
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    color: #1abc9c;
+    letter-spacing: 1px;
+}
+button {
+  margin-top: 20px;
+  height: 60px;
+  border: none;
+  outline: none;
+  text-align: center;
+  width: 160px;
+  border-radius: 40px;
+  background: #fff;
+  border: 2px solid #1abc9c;
+  color: #1abc9c;
+  letter-spacing: 1px;
+  text-shadow: 0;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  font-family: 'Roboto', sans-serif;
+}
+
+span button {
+    width: 80px;
+    font-size: 16px;
+}
+button:hover {
+  color: white;
+  background: #1abc9c;
+}
+
+.option-selected {
+    color: white;
+    background:  #1abc9c;
+}
+h1 {
     text-align: center;
     line-height: 400px;
     vertical-align: middle;
@@ -17,17 +59,33 @@
 
 </head>
 <body>
-    <h1 id = "currentWord"></h1>
-    <h3 >Tried letters: 
-        <span id = "triedLetters"></span>
-    </h3>
-    <h3 > Number of guesses: 
-        <span id = "numberOfGuesses"></span>
-    </h3>
+    <div class="container">
+            <button id = "btn">New Game</button>
+            <span>
+                <button class = "mode option-selected" min-letters = "3" max-letters = "7" >Easy</button>
+                <button class = "mode" min-letters = "8" max-letters = "12">Medium</button>
+                <button class = "mode" min-letters = "13" max-letters = "17">Hard</button>
+            </span>
+           
+            <h1 id = "currentWord"></h1>
+            <h3 >Tried letters: 
+                <span id = "triedLetters"></span>
+            </h3>
+            <h3 > Number of guesses: 
+                <span id = "numberOfGuesses"></span>
+            </h3>
+            
+    </div>
     
 
-
+<script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+</script>
 <script type="text/javascript" src="Hangman.js"></script>
+
+
 </body>
 
 </html>

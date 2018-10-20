@@ -1,17 +1,17 @@
-function Game() {
-    this.dictionary = ["peanut", "apple", "banana", "watermelon"];
-    this.currentWord;
+function Game(dick) {
+    this.dictionary = dick;
+    this.currentWord = "";
     this.triedLetters = [];
     this.currentWordState = [];
     this.numberOfGuesses = 6;
     this.generateWord();
     this.newWordState;
+
 }
 
 Game.prototype.generateWord = function () {
     var wordIndex = Math.floor(Math.random() * this.dictionary.length);
     return this.currentWord = this.dictionary[wordIndex];
-
 }
 
 Game.prototype.isGameWon = function() {
@@ -44,7 +44,6 @@ Game.prototype.makeAMove = function (guessLetter) {
     } 
 }
 
-
 Game.prototype.generateCurrentWordState = function(){
     var newWordState = "";
     for(var i = 0; i< this.currentWord.length; i++){
@@ -59,22 +58,75 @@ Game.prototype.generateCurrentWordState = function(){
     return newWordState;
 }
 
-var joc1 = new Game();
+var joc1 = {};
+var modeButtons = $(".mode");
 
-document.getElementById("currentWord").innerText = joc1.generateCurrentWordState();
-document.getElementById("numberOfGuesses").innerText = joc1.numberOfGuesses;
-document.getElementById("triedLetters").innerText = joc1.triedLetters.join();
 
 window.addEventListener("keydown", function(event){
     if (event.keyCode >= 65 && event.keyCode <= 90){
         joc1.makeAMove(event.key);
-        document.getElementById("currentWord").innerText = joc1.generateCurrentWordState();
-        document.getElementById("numberOfGuesses").innerText = joc1.numberOfGuesses;
-        document.getElementById("triedLetters").innerText = joc1.triedLetters.join();
+        updateDom();
     }
 })
 
+function updateDom(){
+    document.getElementById("currentWord").innerText = joc1.generateCurrentWordState();
+    document.getElementById("numberOfGuesses").innerText = joc1.numberOfGuesses;
+    document.getElementById("triedLetters").innerText = joc1.triedLetters.join();
+}
 
+var modeButtons = $(".mode");
+console.log(modeButtons[0]);
+ (function setupModeButtons(){
+	for(var i=0; i<modeButtons.length; i++){
+        var jQueryButton = $(modeButtons[i]);
+        jQueryButton.click(function(){
+            modeButtons.each( (index, element) => $(element).removeClass("option-selected") ); 
+            $(this).toggleClass('option-selected');
+        })
+	
+ 	}
+ })();
+
+ $("#btn").click(function(){
+     //input de la user in care alege dificutatea jocului(easy 3-7 cuv; med 8-12; hard 13-16)
+     
+     var minOfLetters = parseInt($(".option-selected").attr("min-letters"));
+     var maxOfLetters = parseInt($(".option-selected").attr("max-letters"));
+
+     //ex: daca a ales easy, generez un random num intre 3 si 7 pe care il dau mai departe ca parametru pentru url;
+   
+    
+    var randomNumber = Math.floor(Math.random() * (maxOfLetters - minOfLetters) + minOfLetters);
+
+     
+    
+    console.log(randomNumber);
+    var numOfLettersParam = "";
+    for(var i = 0; i<randomNumber; i++){
+        numOfLettersParam = numOfLettersParam + "?";
+    }
+    console.log(numOfLettersParam);
+    var url = `https://api.datamuse.com/words?sp=${numOfLettersParam}`;
+   
+    $.get(url)
+    .done(function(data){
+        joc1 =  new Game([]);
+        for(var i = 0; i < data.length; i++){
+            joc1.dictionary.push(data[i]["word"]);
+        }
+        joc1.generateWord();
+        updateDom();
+        console.log(joc1.dictionary);
+         console.log(joc1.currentWord);
+    })
+    .fail(function(error){
+      console.log("OH NO, IT FAILED!");
+      console.log(error);
+    })
+ })
+    
+ 
 
 
 
