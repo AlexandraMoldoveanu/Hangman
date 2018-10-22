@@ -1,5 +1,5 @@
-function Game(dick) {
-    this.dictionary = dick;
+function Game(dict) {
+    this.dictionary = dict;
     this.currentWord = "";
     this.triedLetters = [];
     this.currentWordState = [];
@@ -48,7 +48,7 @@ Game.prototype.generateCurrentWordState = function(){
     var newWordState = "";
     for(var i = 0; i< this.currentWord.length; i++){
         if(this.currentWordState[i]){
-            newWordState = newWordState + this.currentWordState[i];
+            newWordState = newWordState +  this.currentWordState[i];
         }
         else{
             newWordState = newWordState + " - ";
@@ -57,6 +57,28 @@ Game.prototype.generateCurrentWordState = function(){
     }
     return newWordState;
 }
+
+Game.prototype.generateHint = function(){
+    var randomNumber = Math.floor(Math.random() * this.currentWord.length);
+    if(this.isGameOver()) {
+        return;
+    }
+        if(!this.currentWordState[randomNumber]){
+            for(var i = 0; i < this.currentWord.length; i++){
+                if(this.currentWord[i] === this.currentWord[randomNumber]){
+                    this.currentWordState[i] = this.currentWord[randomNumber];
+                }
+            }
+            this.currentWordState[randomNumber] = this.currentWord[randomNumber];
+        }  else {
+            this.generateHint();
+        }
+        
+    }
+
+
+
+
 
 var joc1 = {};
 var modeButtons = $(".mode");
@@ -88,34 +110,43 @@ console.log(modeButtons[0]);
  	}
  })();
 
+
+
  $("#btn").click(function(){
      //input de la user in care alege dificutatea jocului(easy 3-7 cuv; med 8-12; hard 13-16)
      
      var minOfLetters = parseInt($(".option-selected").attr("min-letters"));
      var maxOfLetters = parseInt($(".option-selected").attr("max-letters"));
 
-     //ex: daca a ales easy, generez un random num intre 3 si 7 pe care il dau mai departe ca parametru pentru url;
-   
+     //ex: daca a ales easy, generez un random num intre 3 si 7 pe care il dau mai departe ca parametru pentru url;   
     
     var randomNumber = Math.floor(Math.random() * (maxOfLetters - minOfLetters) + minOfLetters);
 
-     
-    
     console.log(randomNumber);
     var numOfLettersParam = "";
     for(var i = 0; i<randomNumber; i++){
         numOfLettersParam = numOfLettersParam + "?";
     }
     console.log(numOfLettersParam);
-    var url = `https://api.datamuse.com/words?sp=${numOfLettersParam}`;
+    var url = `https://api.datamuse.com/words?sp=${numOfLettersParam}&md=p`;
    
     $.get(url)
     .done(function(data){
         joc1 =  new Game([]);
+        
         for(var i = 0; i < data.length; i++){
-            joc1.dictionary.push(data[i]["word"]);
+            if(data[i]["tags"] && data[i]["tags"].length === 1 && data[i]["tags"][0]==="n"){
+                joc1.dictionary.push(data[i]["word"]);
+            }
         }
         joc1.generateWord();
+        for(var i = 0; i < joc1.currentWord.length; i++){
+            if(joc1.currentWord[i] === joc1.currentWord[0]){
+                joc1.currentWordState[i] = joc1.currentWord[0];
+            }
+        }
+        joc1.currentWordState[0] = joc1.currentWord[0];
+
         updateDom();
         console.log(joc1.dictionary);
          console.log(joc1.currentWord);
@@ -125,6 +156,15 @@ console.log(modeButtons[0]);
       console.log(error);
     })
  })
+
+ $("#hint").click(function(){
+     if(joc1.generateHint){
+        joc1.generateHint();
+        updateDom();
+     }
+  
+}); 
+
     
  
 
