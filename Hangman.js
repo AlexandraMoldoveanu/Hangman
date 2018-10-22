@@ -82,6 +82,7 @@ Game.prototype.generateHint = function(){
 
 var joc1 = {};
 var modeButtons = $(".mode");
+var cache = [];
 
 
 window.addEventListener("keydown", function(event){
@@ -129,6 +130,23 @@ console.log(modeButtons[0]);
     }
     console.log(numOfLettersParam);
     var url = `https://api.datamuse.com/words?sp=${numOfLettersParam}&md=p`;
+
+
+
+     if (cache[randomNumber]) {
+         joc1 = new Game(cache[randomNumber]);
+         joc1.generateWord();
+         for (var i = 0; i < joc1.currentWord.length; i++) {
+             if (joc1.currentWord[i] === joc1.currentWord[0]) {
+                 joc1.currentWordState[i] = joc1.currentWord[0];
+             }
+         }
+         joc1.currentWordState[0] = joc1.currentWord[0];
+
+         updateDom();
+
+         return;
+     }
    
     $.get(url)
     .done(function(data){
@@ -139,6 +157,7 @@ console.log(modeButtons[0]);
                 joc1.dictionary.push(data[i]["word"]);
             }
         }
+        cache[randomNumber] = joc1.dictionary;
         joc1.generateWord();
         for(var i = 0; i < joc1.currentWord.length; i++){
             if(joc1.currentWord[i] === joc1.currentWord[0]){
